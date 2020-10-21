@@ -5,16 +5,16 @@ library(tidyverse)
 #  Clifford - softology ---------------------------------------------------------------
 
 
-# The formula looks like this originally:
+# The original formula:
 
 #xnew=sin(a*y)+c*cos(a*x)
 #ynew=sin(b*x)+d*cos(b*y)
 
-#Compare to the OG formula and you'll see that 
-#the code uses the previous point as a reference for each new point
-#Here we define the start points and constants, then use them as input for an Rcpp loop 
-#where we have our attractor functions. This makes an output dataframe with the 
-#x and y coordinates of our points, which we then plot using ggplot.
+#The funtion that will create the trajectory of millions of points (n)
+#starting at origin points x0 and y0
+#using the attractor functions + the previous data point for each new point 
+# + parameters to be defined - a, b, c and d
+#Will result in a data frame 'dat', to be plotted in ggplot
 cppFunction('DataFrame createTrajectory(int n, double x0, double y0, 
             double a, double b, double c, double d) {
             // create the columns
@@ -32,30 +32,16 @@ cppFunction('DataFrame createTrajectory(int n, double x0, double y0,
             ')
 
 
-#Variables a and b are floating point values between -3 and +3
-#Clifford 1 - two circles
-# a = -1.7
-# b = 1.8
-# c = -1.9
-# d = -0.4
+#Loops through a set of 10 random images to be exported.
 
-# #Clifford 2 - cleaner, more clear lines. I love this NEST. 
-# a = -1.7
-# b = 1.3
-# c = -0.1
-# d = -1.21
+for(i in 1:10) {
 
-# #Clifford 3 - hoping to create another version with the "nest" of clifford #2... Although this one is still nice.
-# a = -1.7
-# b = 1.3
-# c = -1.21
-# d = -0.1
+#Variables a, b, c and d are floating point values between -3 and +3
 
-# #Clifford 4 - Starting with the nest (#2) and changing only a. Makes a smokier image - probably not the one to change
-a = 1.8
-b = 1.3
-c = -0.1
-d = -1.21
+a <- runif(1, -3, 3)
+b <- runif(1, -3, 3)
+c <- runif(1, -3, 3)
+d <- runif(1, -3, 3)
 
 #Create the data frame that will be plotted with ggplot
 # Number of points, x and y points start at .1, a and b set above 
@@ -65,7 +51,7 @@ dat = createTrajectory(4000000, .1, .1, a, b, c, d)
 #find previous clipping code if interested in cropping the image
 
 #plot
-ggplot(dat, aes(x, y)) + 
+p <- ggplot(dat, aes(x, y)) + 
   geom_point(shape=46, alpha=.01) + 
   theme(legend.position  = "none",
         panel.background = element_rect(fill="#f3f3e6"), 
@@ -74,7 +60,12 @@ ggplot(dat, aes(x, y)) +
         axis.title       = element_blank(),
         axis.text        = element_blank())
 
-ggsave("clifford4.png", device = "png", 
+ggsave(filename = paste0("clifford"," a ",round(a,3)," b ",round(b, 3)," c ",round(c, 3)," d ",round(d, 3),".png"), 
+       p, 
+       device = "png", 
        width = 10,
        height = 10,
        units = c("in"),)
+
+}
+

@@ -5,16 +5,16 @@ library(tidyverse)
 
 # First Try - Bedhead -----------------------------------------------------
 
+# The original formula:
 
-#BEDHEAD - from Will Chase originally, also used Softology blog 
-# The formula looks like this originally:
 # xnew=sin(x*y/b)*y+cos(a*x-y)
 # ynew=x+sin(y)/b
-#Compare to the OG formula and you'll see that 
-#the code uses the previous point as a reference for each new point
-#Here we define the start points and constants, then use them as input for an Rcpp loop 
-#where we have our attractor functions. This makes an output dataframe with the 
-#x and y coordinates of our points, which we then plot using ggplot.
+
+#The funtion that will create the trajectory of millions of points (n)
+#starting at origin points x0 and y0
+#using the attractor functions + the previous data point for each new point 
+# + parameters to be defined - a, b
+#Will result in a data frame 'dat', to be plotted in ggplot
 cppFunction('DataFrame createTrajectory(int n, double x0, double y0, 
             double a, double b) {
             // create the columns
@@ -31,11 +31,14 @@ cppFunction('DataFrame createTrajectory(int n, double x0, double y0,
             }
             ')
 
-#Variables a and b are floating point values between -1 and +1
 
-#Bedhead 1, 2
-a = -.8
-b = -.2
+#Loops through a set of 10 random images to be exported.
+
+for(i in 1:10) {
+  
+#Set parameters - random values between -1 and 1
+a <- runif(1, -1, 1)
+b <- runif(1, -1, 1)
 
 #Create the data frame that will be plotted with ggplot
 # Number of points, x and y points start at 1, a and b set above 
@@ -52,12 +55,14 @@ p <- ggplot(dat, aes(x, y)) +
         axis.title       = element_blank(),
         axis.text        = element_blank())
 
-ggsave(filename = paste0("bedhead"," a ",a," b ",b,".png"), p, device = "png", 
+ggsave(filename = paste0("bedhead"," a ",round(a,3)," b ",round(b,3),".png"), 
+       p, 
+       device = "png", 
        width = 10,
        height = 10,
        units = c("in"),)
 
-#Try adding "ratchet" parameter
+#"ratchet" parameter
 #Try adding color
 
-
+}
