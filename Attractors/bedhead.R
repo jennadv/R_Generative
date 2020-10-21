@@ -34,29 +34,16 @@ cppFunction('DataFrame createTrajectory(int n, double x0, double y0,
 #Variables a and b are floating point values between -1 and +1
 
 #Bedhead 1, 2
-a = .09
-b = .83
+a = -.8
+b = -.2
 
 #Create the data frame that will be plotted with ggplot
 # Number of points, x and y points start at 1, a and b set above 
 #createTrajectory(n, x0, y0, a, b)
 dat = createTrajectory(4000000, 1, 1, a, b)
 
-#clip outer points
-#Sometimes you need to crop the image to make a really compelling picture. 
-#By “zooming in” you can see patterns in what might have looked like a rather 
-#squished or failed attractor. You can “zoom” in R by doing something like this.
-xmax <- max(dat$x)/2.5
-xmin <- min(dat$x)/2.5
-ymax <- max(dat$y)/2.5
-ymin <- min(dat$y)/2.5
-
-dat_clip <- dat %>%
-  filter(x > xmin & x < xmax) %>%
-  filter(y > ymin & y < ymax)
-
 #plot
-ggplot(dat_clip, aes(x, y)) + 
+p <- ggplot(dat, aes(x, y)) + 
   geom_point(shape=46, alpha=.01) + 
   theme(legend.position  = "none",
         panel.background = element_rect(fill="#f3f3e6"), 
@@ -65,7 +52,7 @@ ggplot(dat_clip, aes(x, y)) +
         axis.title       = element_blank(),
         axis.text        = element_blank())
 
-ggsave("bedhead3.png", device = "png", 
+ggsave(filename = paste0("bedhead"," a ",a," b ",b,".png"), p, device = "png", 
        width = 10,
        height = 10,
        units = c("in"),)

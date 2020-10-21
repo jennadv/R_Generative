@@ -39,8 +39,20 @@ cppFunction('DataFrame createTrajectory(int n, double x0, double y0,
 # c = -1.9
 # d = -0.4
 
-#Clifford 2 - cleaner, more clear lines
-a = -1.7
+# #Clifford 2 - cleaner, more clear lines. I love this NEST. 
+# a = -1.7
+# b = 1.3
+# c = -0.1
+# d = -1.21
+
+# #Clifford 3 - hoping to create another version with the "nest" of clifford #2... Although this one is still nice.
+# a = -1.7
+# b = 1.3
+# c = -1.21
+# d = -0.1
+
+# #Clifford 4 - Starting with the nest (#2) and changing only a. Makes a smokier image - probably not the one to change
+a = 1.8
 b = 1.3
 c = -0.1
 d = -1.21
@@ -62,7 +74,7 @@ ggplot(dat, aes(x, y)) +
         axis.title       = element_blank(),
         axis.text        = element_blank())
 
-ggsave("clifford2.png", device = "png", 
+ggsave("clifford4.png", device = "png", 
        width = 10,
        height = 10,
        units = c("in"),)
